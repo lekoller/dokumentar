@@ -16,17 +16,14 @@ func (m MyTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) colo
 		switch name {
 		case theme.ColorNameBackground:
 			return color.RGBA{R: 50, G: 57, B: 73}
-		case theme.ColorNameInputBackground:
+		case theme.ColorNameScrollBar:
 			return color.RGBA{R: 31, G: 39, B: 60}
+		// case theme.ColorNameInputBackground:
+		// 	return color.RGBA{R: 31, G: 39, B: 60, A: 255}
+		case theme.ColorNameButton:
+			return color.RGBA{R: 39, G: 32, B: 62}
 		}
 	}
-
-	// if name == theme.ColorNameBackground {
-	// 	if variant == theme.VariantLight {
-	// 		return color.White
-	// 	}
-	// }
-
 	return theme.DefaultTheme().Color(name, variant)
 }
 

@@ -1,10 +1,11 @@
-package features
+package components
 
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -25,7 +26,9 @@ func NewInputList() (il *InputList) {
 }
 
 func (il *InputList) setupButton() {
-	il.AddButton = widget.NewButton("+", il.addEntriesLine)
+	il.AddButton = widget.NewButton("add item", il.addEntriesLine)
+	il.AddButton.Icon = theme.ContentAddIcon()
+
 	il.addEntriesLine()
 }
 
