@@ -52,13 +52,13 @@ func (il *InputList) Clear() {
 	il.addEntriesLine()
 }
 
-func (il *InputList) Remove(id int, elem *fyne.Container) {
+func (il *InputList) Remove(id int, row *fyne.Container) {
 	for _, item := range il.Items {
 		if item.Id == id {
 			item.delete()
 		}
 	}
-	il.Box.Remove(elem)
+	il.Box.Remove(row)
 }
 
 func (il *InputList) setupButton() {
@@ -67,7 +67,7 @@ func (il *InputList) setupButton() {
 }
 
 func (il *InputList) addEntriesLine() {
-	var line *fyne.Container
+	var row *fyne.Container
 	var connType string
 	var method string
 	entity := binding.NewString()
@@ -102,7 +102,7 @@ func (il *InputList) addEntriesLine() {
 		CommentEntry: comment,
 	}
 	deleteButton := widget.NewButton("", func() {
-		il.Remove(data.Id, line)
+		il.Remove(data.Id, row)
 	})
 	deleteButton.Icon = theme.CancelIcon()
 
@@ -141,7 +141,7 @@ func (il *InputList) addEntriesLine() {
 		container.NewPadded(commentInput),
 	)
 
-	line = container.New(
+	row = container.New(
 		layout.NewVBoxLayout(),
 		headGrid,
 		singleLinesGrid,
@@ -149,6 +149,6 @@ func (il *InputList) addEntriesLine() {
 		container.NewPadded(widget.NewSeparator()),
 	)
 
-	il.Box.Add(line)
+	il.Box.Add(row)
 	il.Index += 1
 }
