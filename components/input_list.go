@@ -21,6 +21,11 @@ type ItemData struct {
 	Endpoint     binding.String
 	JsonEntry    binding.String
 	CommentEntry binding.String
+	Deleted      bool
+}
+
+func (i *ItemData) delete() {
+	i.Deleted = true
 }
 
 type InputList struct {
@@ -35,17 +40,34 @@ func NewInputList() (il *InputList) {
 		Box: container.New(layout.NewVBoxLayout()),
 	}
 	il.setupButton()
+	il.addEntriesLine()
 	return
+}
+
+func (il *InputList) Clear() {
+	il.Items = []*ItemData{}
+	il.Index = 0
+	il.Box.RemoveAll()
+	il.setupButton()
+	il.addEntriesLine()
+}
+
+func (il *InputList) Remove(id int, elem *fyne.Container) {
+	for _, item := range il.Items {
+		if item.Id == id {
+			item.delete()
+		}
+	}
+	il.Box.Remove(elem)
 }
 
 func (il *InputList) setupButton() {
 	il.AddButton = widget.NewButton("add item", il.addEntriesLine)
 	il.AddButton.Icon = theme.ContentAddIcon()
-
-	il.addEntriesLine()
 }
 
 func (il *InputList) addEntriesLine() {
+	var line *fyne.Container
 	var connType string
 	var method string
 	entity := binding.NewString()
@@ -79,6 +101,10 @@ func (il *InputList) addEntriesLine() {
 		JsonEntry:    json,
 		CommentEntry: comment,
 	}
+	deleteButton := widget.NewButton("", func() {
+		il.Remove(data.Id, line)
+	})
+	deleteButton.Icon = theme.CancelIcon()
 
 	il.Items = append(il.Items, data)
 
@@ -101,6 +127,7 @@ func (il *InputList) addEntriesLine() {
 		layout.NewGridLayout(3),
 		container.NewPadded(canvas.NewText("  Item #"+strconv.Itoa(data.Id), color.RGBA{R: 104, G: 112, B: 132})),
 		container.NewPadded(entityInput),
+		container.NewPadded(container.NewHBox(layout.NewSpacer(), deleteButton)),
 	)
 	singleLinesGrid := container.New(
 		layout.NewGridLayout(3),
@@ -114,7 +141,7 @@ func (il *InputList) addEntriesLine() {
 		container.NewPadded(commentInput),
 	)
 
-	line := container.New(
+	line = container.New(
 		layout.NewVBoxLayout(),
 		headGrid,
 		singleLinesGrid,

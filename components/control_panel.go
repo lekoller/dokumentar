@@ -9,14 +9,14 @@ import (
 )
 
 type ControlPanel struct {
-	DataList    []*ItemData
+	InputList   *InputList
 	ProjectInfo *ProjectInfo
 	Box         *fyne.Container
 }
 
-func NewControlPanel(info *ProjectInfo, list []*ItemData) (control *ControlPanel) {
+func NewControlPanel(info *ProjectInfo, list *InputList) (control *ControlPanel) {
 	control = &ControlPanel{
-		DataList:    list,
+		InputList:   list,
 		ProjectInfo: info,
 		Box:         container.New(layout.NewVBoxLayout(), container.NewPadded(widget.NewSeparator())),
 	}
@@ -25,9 +25,19 @@ func NewControlPanel(info *ProjectInfo, list []*ItemData) (control *ControlPanel
 }
 
 func (c *ControlPanel) setup() {
-	renderButton := widget.NewButton("render documentation", func() {})
+	renderButton := widget.NewButton("render documentation", func() {
+	})
 	renderButton.Icon = theme.ConfirmIcon()
 
-	horizontal := container.NewHBox(layout.NewSpacer(), container.NewPadded(renderButton))
+	clearButton := widget.NewButton("clear", func() {
+		c.InputList.Clear()
+	})
+	clearButton.Icon = theme.DeleteIcon()
+
+	horizontal := container.NewHBox(
+		layout.NewSpacer(),
+		container.NewPadded(clearButton),
+		container.NewPadded(renderButton),
+	)
 	c.Box.Add(horizontal)
 }

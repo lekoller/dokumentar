@@ -27,19 +27,36 @@ func main() {
 	tableHead := components.NewGridHead("Project Name", "Container Name", "Module Name")
 
 	titleBlock := components.NewTitleComponent()
-	projectBlock := components.NewProjectInfo()
+	project := components.NewProjectInfo()
 	addBlock := container.New(layout.NewHBoxLayout(), layout.NewSpacer(), il.AddButton, layout.NewSpacer())
-	controlBlock := components.NewControlPanel(projectBlock, il.Items)
+	control := components.NewControlPanel(project, il)
 	vBox := container.New(
 		layout.NewVBoxLayout(),
 		titleBlock,
 		tableHead,
-		projectBlock.Box,
+		project.Box,
 		il.Box,
 		addBlock,
-		controlBlock.Box,
+		layout.NewSpacer(),
+		control.Box,
 	)
-	scrollBox := container.NewVScroll(container.NewPadded(vBox))
+	scrollBox := container.NewVScroll(
+		container.NewPadded(
+			container.NewPadded(
+				container.NewPadded(
+					container.NewPadded(
+						container.NewPadded(
+							container.NewPadded(
+								container.NewPadded(
+									container.NewPadded(container.NewPadded(vBox)),
+								),
+							),
+						),
+					),
+				),
+			),
+		),
+	)
 
 	win.SetContent(scrollBox)
 	win.ShowAndRun()

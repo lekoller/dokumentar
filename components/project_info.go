@@ -32,13 +32,16 @@ func NewProjectInfo() *ProjectInfo {
 	containerInput.SetPlaceHolder("define software unit name")
 	moduleInput.SetPlaceHolder("define where, inside the software")
 
-	box := container.NewPadded(container.New(
+	box := container.New(
 		layout.NewGridLayout(3),
 		container.NewPadded(projectInput),
 		container.NewPadded(containerInput),
 		container.NewPadded(moduleInput),
-	))
+	)
 	return &ProjectInfo{
-		Box: container.NewVBox(box, container.NewPadded(widget.NewSeparator())),
+		ProjectName:   projectName,
+		ContainerName: containerName,
+		ModuleName:    moduleName,
+		Box:           container.NewVBox(box, container.NewPadded(widget.NewSeparator())),
 	}
 }
