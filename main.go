@@ -8,7 +8,6 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/widget"
 	"github.com/lekoller/dokumentar/components"
 	"github.com/lekoller/dokumentar/my_theme"
 )
@@ -25,19 +24,23 @@ func main() {
 	a.Settings().SetTheme(my_theme.MyTheme{})
 
 	il := components.NewInputList()
-	tableHead := components.NewGridHead("paste your JSON here", "add your commentary here")
+	tableHead := components.NewGridHead("Project Name", "Container Name", "Module Name")
 
 	titleBlock := components.NewTitleComponent()
+	projectBlock := components.NewProjectInfo()
 	addBlock := container.New(layout.NewHBoxLayout(), layout.NewSpacer(), il.AddButton, layout.NewSpacer())
+	controlBlock := components.NewControlPanel(projectBlock, il.Items)
 	vBox := container.New(
 		layout.NewVBoxLayout(),
 		titleBlock,
 		tableHead,
+		projectBlock.Box,
 		il.Box,
-		widget.NewSeparator(),
 		addBlock,
+		controlBlock.Box,
 	)
+	scrollBox := container.NewVScroll(container.NewPadded(vBox))
 
-	win.SetContent(vBox)
+	win.SetContent(scrollBox)
 	win.ShowAndRun()
 }
