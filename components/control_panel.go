@@ -25,8 +25,7 @@ func NewControlPanel(info *ProjectInfo, list *InputList) (control *ControlPanel)
 }
 
 func (c *ControlPanel) setup() {
-	renderButton := widget.NewButton("render documentation", func() {
-	})
+	renderButton := widget.NewButton("render documentation", mountRenderCallback(c))
 	renderButton.Icon = theme.ConfirmIcon()
 
 	clearButton := widget.NewButton("clear", func() {
