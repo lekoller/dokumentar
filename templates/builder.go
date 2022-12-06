@@ -36,12 +36,14 @@ type Table struct {
 	Endpoint   string
 	Comment    string
 	Rows       []TableRow
+	SubTables  []Table
 }
 
 type TableRow struct {
-	Field  string
-	Type   string
-	Detail string
+	Field    string
+	Type     string
+	Detail   string
+	SubTable *Table
 }
 
 func BuildTemplate(data BuilderDTO) {
@@ -52,6 +54,7 @@ func BuildTemplate(data BuilderDTO) {
 	}
 
 	for i, item := range data.List {
+		var tables []Table
 		var jsonMap map[string]any
 		json.Unmarshal([]byte(data.List[i].JsonEntry), &jsonMap)
 
@@ -60,6 +63,9 @@ func BuildTemplate(data BuilderDTO) {
 		if item.Method == "" {
 			item.Method = "--"
 		}
+		for _, row := range rows {
+			tables = append(tables, *row.SubTable)
+		}
 		document.Tables = append(document.Tables, Table{
 			Entity:     item.Entity,
 			Connection: item.ConnType,
@@ -67,6 +73,7 @@ func BuildTemplate(data BuilderDTO) {
 			Endpoint:   item.Endpoint,
 			Comment:    item.CommentEntry,
 			Rows:       rows,
+			SubTables:  tables,
 		})
 	}
 

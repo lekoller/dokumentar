@@ -2,12 +2,14 @@ package templates
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 )
 
 func mapToRows(jsonMap map[string]any) (rows []TableRow) {
 	for field, value := range jsonMap {
+		var subTable Table
 		var valueType string
 		var detail string
 
@@ -32,7 +34,19 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow) {
 				detail = "(uuid)"
 			}
 		}
-		rows = append(rows, TableRow{Field: field, Type: valueType, Detail: detail})
+		row := TableRow{Field: field, Type: valueType, Detail: detail}
+
+		if valueType == "" {
+			fieldSliced := strings.Split(field, "_")
+
+			for _, frag := range fieldSliced {
+				valueType += strings.Title(frag)
+			}
+			subTable.Entity = valueType
+			subTable.Rows = mapToRows(value.(map[string]any))
+			row.SubTable = &subTable
+		}
+		rows = append(rows, row)
 	}
 	return
 }
