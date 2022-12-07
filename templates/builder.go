@@ -2,8 +2,12 @@ package templates
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 	"text/template"
+
+	"github.com/gogap/config"
+	"github.com/gogap/go-pandoc/pandoc"
 )
 
 type BuilderDTO struct {
@@ -60,11 +64,8 @@ func BuildTemplate(data BuilderDTO) {
 		var jsonMap map[string]any
 		json.Unmarshal([]byte(data.List[i].JsonEntry), &jsonMap)
 
-		rows := mapToRows(jsonMap)
+		rows, fields := mapToRows(jsonMap)
 
-		if item.Method == "" {
-			item.Method = "--"
-		}
 		for _, row := range rows {
 			if row.SubTable != nil {
 				var tbs []Table
@@ -95,7 +96,7 @@ func BuildTemplate(data BuilderDTO) {
 			Connection:   item.ConnType,
 			Method:       item.Method,
 			Endpoint:     item.Endpoint,
-			Comment:      item.CommentEntry,
+			Comment:      highlightFields(fields, item.CommentEntry),
 			Rows:         rows,
 			SubTables:    tables,
 			HasSubTables: len(tables) > 0,
@@ -117,5 +118,59 @@ func BuildTemplate(data BuilderDTO) {
 	err := t.Execute(f, document)
 	if err != nil {
 		panic(err)
+	}
+
+	// wkhtmltopdf.
+
+	// pdfGen, err := wkhtmltopdf.NewPDFGenerator()
+	// if err != nil {
+	// 	log.Println("creating generator:", err.Error())
+	// }
+	// pdfGen.AddPage(wkhtmltopdf.NewPageReader(f))
+	// err = pdfGen.Create()
+	// if err != nil {
+	// 	log.Println("creating document:", err.Error())
+	// }
+	// pdfGen.WriteFile("./docs.pdf")
+
+	// doc := wkhtmltopdf.NewDocument()
+	// pg := wkhtmltopdf.NewPage("index.html")
+	// doc.AddPages(pg)
+
+	// err = doc.WriteToFile("docs.pdf")
+	// if err != nil {
+	// 	log.Println("creating document:", err.Error())
+	// }
+	// m := pdf.NewMaroto(consts.Portrait, consts.A4)
+	// m.SetPageMargins(20, 10, 20)
+
+	// err = m.OutputFileAndClose("docs_" + document.ProjectName + ".pdf")
+	// if err != nil {
+	// 	log.Println("creating document:", err.Error())
+	// }
+	conf := config.NewConfig()
+	log.Println(conf.Configuration)
+
+	pdoc, err := pandoc.New(conf)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	convData, err := pdoc.Convert(
+		pandoc.FetcherOptions{
+			Name:   "data",
+			Params: []byte((`{"url": "./index.html"`)),
+		}, pandoc.ConvertOptions{
+			From:      "html",
+			To:        "pdf",
+			DataDir:   "./",
+			PDFEngine: "weasyprint",
+		},
+	)
+
+	log.Println(convData)
+	f2, err := os.Create("docs.pdf")
+	_, err = f2.Write(convData)
+	if err != nil {
+		log.Println(err.Error())
 	}
 }

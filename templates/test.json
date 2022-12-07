@@ -4,7 +4,10 @@
     "shores": 1,
     "uuid_ex": "123e4567-e89b-12d3-a456-426614174000",
     "boris": {
-        "name": "jorge"
+        "name": "jorge",
+        "coisas": [
+            1, 2
+        ]
     },
     "alex_kid": {
         "name": "kiddo",
