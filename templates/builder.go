@@ -30,20 +30,22 @@ type Document struct {
 }
 
 type Table struct {
-	Entity     string
-	Connection string
-	Method     string
-	Endpoint   string
-	Comment    string
-	Rows       []TableRow
-	SubTables  []Table
+	Entity       string
+	Connection   string
+	Method       string
+	Endpoint     string
+	Comment      string
+	Rows         []TableRow
+	SubTables    []Table
+	HasSubTables bool
 }
 
 type TableRow struct {
-	Field    string
-	Type     string
-	Detail   string
-	SubTable *Table
+	Field        string
+	Type         string
+	Detail       string
+	SubTable     *Table
+	NotPrimitive bool
 }
 
 func BuildTemplate(data BuilderDTO) {
@@ -64,16 +66,39 @@ func BuildTemplate(data BuilderDTO) {
 			item.Method = "--"
 		}
 		for _, row := range rows {
-			tables = append(tables, *row.SubTable)
+			if row.SubTable != nil {
+				var tbs []Table
+
+				for _, ro := range row.SubTable.Rows {
+					if ro.SubTable != nil {
+						var ts []Table
+
+						for _, r := range ro.SubTable.Rows {
+							if r.SubTable != nil {
+								ts = append(ts, *r.SubTable)
+							}
+						}
+						ro.SubTable.SubTables = ts
+						ro.SubTable.HasSubTables = len(ts) > 0
+
+						tbs = append(tbs, *ro.SubTable)
+					}
+				}
+				row.SubTable.SubTables = tbs
+				row.SubTable.HasSubTables = len(tbs) > 0
+
+				tables = append(tables, *row.SubTable)
+			}
 		}
 		document.Tables = append(document.Tables, Table{
-			Entity:     item.Entity,
-			Connection: item.ConnType,
-			Method:     item.Method,
-			Endpoint:   item.Endpoint,
-			Comment:    item.CommentEntry,
-			Rows:       rows,
-			SubTables:  tables,
+			Entity:       item.Entity,
+			Connection:   item.ConnType,
+			Method:       item.Method,
+			Endpoint:     item.Endpoint,
+			Comment:      item.CommentEntry,
+			Rows:         rows,
+			SubTables:    tables,
+			HasSubTables: len(tables) > 0,
 		})
 	}
 

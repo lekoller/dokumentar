@@ -3,7 +3,26 @@
     "land": 9.6,
     "shores": 1,
     "uuid_ex": "123e4567-e89b-12d3-a456-426614174000",
-    "nega": {
+    "boris": {
         "name": "jorge"
+    },
+    "alex_kid": {
+        "name": "kiddo",
+        "bones": 4,
+        "kind": "boy"
+    },
+    "frango": {
+        "animal": "dog",
+        "owner": "Ronald",
+        "hue": {
+            "animal": "dog",
+            "owner": "Ronald",
+            "bones": 4,
+            "kind": "boy",
+            "mullet": {
+                "name": "mu",
+                "kind": "hair"
+            }
+        }
     }
 }

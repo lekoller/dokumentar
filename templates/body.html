@@ -1,6 +1,6 @@
 {{ template "head.html" }}
-<body class="bg-slate-800 flex flex-col items-center min-h-screen">
-    <section class="flex flex-col justify-start w-6/12">
+<body class="bg-slate-800 flex flex-col items-center min-h-screen w-full max-w-7/12">
+    <section class="flex flex-col justify-start w-7/12">
         <div class="p-2 mt-4">
             <h1 class="text-slate-500 text-3xl">{{ .ProjectName }}</h1>
         </div>
@@ -10,7 +10,7 @@
         </div>
     </section>
     {{ range .Tables }}
-    <section class="bg-slate-900 flex flex-row justify-start p-4 w-6/12">
+    <section class="bg-slate-900 flex flex-row justify-start p-4 w-7/12">
         <h4 class="text-slate-300 mx-8 text-lg">{{ .Entity }}</h4>
         <div class="flex items-end">
             <div class="text-slate-400 mx-8">
@@ -27,8 +27,8 @@
             </div>
         </div>
     </section>
-    <section class="col-span-12 flex my-2 justify-start w-6/12">
-        <div class="overflow-auto lg:overflow-visible mx-2 w-1/3">
+    <section class="col-span-12 flex my-2 mb-2 justify-start w-7/12 gap-4 p-2">
+        <div class="overflow-auto lg:overflow-visible w-1/3">
             <table class="table text-slate-300 text-sm w-full">
                 <thead class="bg-sky-900 text-slate-300">
                     <tr>
@@ -43,14 +43,18 @@
                             {{ .Field }}
                         </td>
                         <td class="p-4">
+                            {{ if .NotPrimitive }}
+                            <span class="font-bold">{{ .Type }}</span>
+                            {{ else }}
                             <span>{{ .Type }}</span> <span class="text-slate-500">{{ .Detail }}</span>
+                            {{ end }}
                         </td>
                     </tr>
                     {{ end }}
                 </tbody>
             </table>
         </div>
-        <div class="bg-slate-700 rounded-lg mx-2 p-4 flex flex-row items-start w-2/3">
+        <div class="bg-slate-700 rounded-lg p-4 flex flex-row items-start w-2/3">
             <div class="text-slate-400 mx-8 flex flex-row items-start">
                 <span class="text-start w-full">
                     {{ .Comment }}
@@ -58,6 +62,113 @@
             </div>
         </div>
     </section>
+
+    {{ if .HasSubTables }}
+    <section class="col-span-12 grid grid-cols-4 justify-center gap-4 p-2 w-7/12 mb-12">
+        {{ range .SubTables }}
+        <div class="overflow-auto lg:overflow-visible">
+            <table class="table text-slate-300 text-sm w-full">
+                <thead class="bg-indigo-900 text-slate-300">
+                    <tr>
+                        <th class="px-4 py-2 text-start">{{ .Entity }}</th>
+                        <th class="p-4"></th>
+                    </tr>
+                    <tr>
+                        <th class="p-4 text-end">Field</th>
+                        <th class="p-4 text-start">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Rows }}
+                    <tr class="even:bg-slate-600 bg-slate-700">
+                        <td class="p-4 text-end">
+                            {{ .Field }}
+                        </td>
+                        <td class="p-4">
+                            {{ if .NotPrimitive }}
+                            <span class="font-bold">{{ .Type }}</span>
+                            {{ else }}
+                            <span>{{ .Type }}</span> <span class="text-slate-500">{{ .Detail }}</span>
+                            {{ end }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+
+        {{ if .HasSubTables }}
+        {{ range .SubTables }}
+        <div class="overflow-auto lg:overflow-visible">
+            <table class="table text-slate-300 text-sm w-full">
+                <thead class="bg-violet-900 text-slate-300">
+                    <tr>
+                        <th class="px-4 py-2 text-start">{{ .Entity }}</th>
+                        <th class="p-4"></th>
+                    </tr>
+                    <tr>
+                        <th class="p-4 text-end">Field</th>
+                        <th class="p-4 text-start">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Rows }}
+                    <tr class="even:bg-slate-600 bg-slate-700">
+                        <td class="p-4 text-end">
+                            {{ .Field }}
+                        </td>
+                        <td class="p-4">
+                            {{ if .NotPrimitive }}
+                            <span class="font-bold">{{ .Type }}</span>
+                            {{ else }}
+                            <span>{{ .Type }}</span> <span class="text-slate-500">{{ .Detail }}</span>
+                            {{ end }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+
+        {{ if .HasSubTables }}
+        {{ range .SubTables }}
+        <div class="overflow-auto lg:overflow-visible">
+            <table class="table text-slate-300 text-sm w-full">
+                <thead class="bg-fuchsia-900 text-slate-300">
+                    <tr>
+                        <th class="px-4 py-2 text-start">{{ .Entity }}</th>
+                        <th class="p-4"></th>
+                    </tr>
+                    <tr>
+                        <th class="p-4 text-end">Field</th>
+                        <th class="p-4 text-start">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Rows }}
+                    <tr class="even:bg-slate-600 bg-slate-700">
+                        <td class="p-4 text-end">
+                            {{ .Field }}
+                        </td>
+                        <td class="p-4">
+                            {{ if .NotPrimitive }}
+                            <span class="font-bold">{{ .Type }}</span>
+                            {{ else }}
+                            <span>{{ .Type }}</span> <span class="text-slate-500">{{ .Detail }}</span>
+                            {{ end }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+        {{ end }}
+        {{ end }}
+        {{ end }}
+        {{ end }}
+    {{ end }}
+    </section>
+    {{ end }}
     {{ end }}
 </body>
 {{ template "foot.html" }}

@@ -36,7 +36,9 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow) {
 		}
 		row := TableRow{Field: field, Type: valueType, Detail: detail}
 
-		if valueType == "" {
+		_, ok = value.(map[string]any)
+		if ok {
+			valueType = ""
 			fieldSliced := strings.Split(field, "_")
 
 			for _, frag := range fieldSliced {
@@ -45,6 +47,9 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow) {
 			subTable.Entity = valueType
 			subTable.Rows = mapToRows(value.(map[string]any))
 			row.SubTable = &subTable
+			row.Type = valueType
+			row.Detail = ""
+			row.NotPrimitive = true
 		}
 		rows = append(rows, row)
 	}
