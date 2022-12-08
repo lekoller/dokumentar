@@ -3,6 +3,7 @@ package templates
 import (
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/google/uuid"
 )
@@ -107,21 +108,100 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 	return
 }
 
-func highlightFields(fields []string, commentary string) (comment string) {
-	for _, field := range fields {
-		var com string
-		comSliced := strings.Split(commentary, field)
+func highlightFields(fields []string, commentary string) (cws []CommentWord) {
+	words := strings.Split(commentary, " ")
 
-		if len(comSliced) > 1 {
-			for i, frag := range comSliced {
-				com += frag
-				if i < (len(comSliced) - 1) {
-					com += `<span class="text-sky-600">` + field + `</span>`
+	for _, word := range words {
+		var w *map[int]string
+		hl, field := doesWordContainsAField(word, fields)
+
+		if hl {
+			wSlc := strings.Split(word, field)
+
+			if len(wSlc) > 0 {
+				if hasAlpha(wSlc[0]) {
+					hl = false
+				} else {
+					switch len(wSlc) {
+					case 1:
+						// w[0] = ""
+						// w[1] = field
+						// w[2] = wSlc[0]
+						w = &map[int]string{
+							0: "",
+							1: field,
+							2: wSlc[0],
+						}
+					case 2:
+						if hasAlpha(wSlc[1]) {
+							hl = false
+						} else {
+							// w[0] = wSlc[0]
+							// w[1] = field
+							// w[2] = wSlc[1]
+							w = &map[int]string{
+								0: wSlc[0],
+								1: field,
+								2: wSlc[1],
+							}
+						}
+					}
+				}
+			} else {
+				w = &map[int]string{
+					0: word,
+					1: "",
+					2: "",
 				}
 			}
-			commentary = com
 		}
-		comment = commentary
+
+		if !hl {
+			w = &map[int]string{
+				0: word,
+				1: "",
+				2: "",
+			}
+		}
+
+		cws = append(cws, CommentWord{
+			Word:      *w,
+			Highlight: hl,
+		})
 	}
+	// for _, field := range fields {
+	// 	var com string
+	// 	comSliced := strings.Split(commentary, field)
+	// 	if len(comSliced) > 1 {
+	// 		for i, frag := range comSliced {
+	// 			com += frag
+	// 			if i < (len(comSliced) - 1) {
+	// 				com += `<span class="text-sky-600">` + field + `</span>`
+	// 			}
+	// 		}
+	// 		commentary = com
+	// 	}
+	// 	comment = commentary
+	// }
+
+	// comment = commentary
 	return
+}
+
+func hasAlpha(s string) bool {
+	for _, r := range s {
+		if unicode.IsLetter(r) {
+			return true
+		}
+	}
+	return false
+}
+
+func doesWordContainsAField(word string, fields []string) (bool, string) {
+	for _, field := range fields {
+		if strings.Contains(word, field) {
+			return true, field
+		}
+	}
+	return false, ""
 }
