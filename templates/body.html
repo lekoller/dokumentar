@@ -57,7 +57,17 @@
         <div class="bg-slate-700 rounded-lg p-4 flex flex-row items-start w-2/3">
             <div class="text-slate-400 mx-8 flex flex-row items-start">
                 <span class="text-start w-full">
-                    {{ .Comment }}
+                    {{ range .Comment }}
+                        {{ if .Highlight }}
+                            {{ range $key, $value := .Word }}{{ if eq $key 1 }}<span class="text-sky-600">{{ $value }}</span>{{ else }}<span>{{ $value }}</span>{{ end }}{{ end }}
+                        {{ else }}
+                            {{ range $key, $value := .Word }}
+                                {{ if eq $key 0 }}
+                                    <span>{{ $value }}</span>
+                                {{ end }}
+                            {{ end }}
+                        {{ end }}
+                    {{ end }}
                 </span>
             </div>
         </div>

@@ -34,10 +34,15 @@ type Table struct {
 	Connection   string
 	Method       string
 	Endpoint     string
-	Comment      string
+	Comment      []CommentWord
 	Rows         []TableRow
 	SubTables    []Table
 	HasSubTables bool
+}
+
+type CommentWord struct {
+	Word      map[int]string
+	Highlight bool
 }
 
 type TableRow struct {
