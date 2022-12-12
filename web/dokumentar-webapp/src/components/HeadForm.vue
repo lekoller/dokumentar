@@ -19,16 +19,14 @@
                             :rules="optionalNameRules"
                             :counter="20"
                             label="Your Role"
-                            required
                         ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="4">
                         <v-text-field
                             v-model="email"
-                            :rules="optionalNameRules"
+                            :rules="emailRules"
                             label="E-mail"
-                            required
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -91,10 +89,7 @@ export default defineComponent({
                 v.length <= 20 || "Name must be less than 20 characters",
         ],
         email: "",
-        emailRules: [
-            (v: string) => !!v || "E-mail is required",
-            (v: string) => /.+@.+/.test(v) || "E-mail must be valid",
-        ],
+        emailRules: [(v: string) => /.+@.+/.test(v) || "E-mail must be valid"],
     }),
 });
 </script>
