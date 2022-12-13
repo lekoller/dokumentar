@@ -6,6 +6,8 @@ import (
 	"unicode"
 
 	"github.com/google/uuid"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
@@ -37,6 +39,12 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 				detail = "(uuid)"
 			}
 		}
+		_, ok = value.(bool)
+		if ok {
+			detail = ""
+			valueType = "boolean"
+		}
+
 		row := TableRow{Field: field, Type: valueType, Detail: detail}
 
 		_, ok = value.(map[string]any)
@@ -45,7 +53,8 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 			fieldSliced := strings.Split(field, "_")
 
 			for _, frag := range fieldSliced {
-				valueType += strings.Title(frag)
+				// valueType += strings.Title(frag)
+				valueType += cases.Title(language.Und).String(frag)
 			}
 			r, f := mapToRows(value.(map[string]any))
 			subTable.Rows = r
@@ -58,7 +67,6 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 		}
 
 		aList, ok := value.([]any)
-		// log.Println(value, ok)
 		if ok {
 			first := aList[0]
 

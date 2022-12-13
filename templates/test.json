@@ -24,7 +24,8 @@
             "kind": "boy",
             "mullet": {
                 "name": "mu",
-                "kind": "hair"
+                "kind": "hair",
+                "cool": true
             }
         }
     }
