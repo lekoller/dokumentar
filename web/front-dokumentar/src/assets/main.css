@@ -1,0 +1,20 @@
+#app {
+    font-weight: normal;
+}
+
+h1 {
+    /* color: #323949; */
+    color: #4B5468;
+    font-weight: normal;
+    margin-left: 32px;
+}
+
+h4 {
+    color: #4B5468;
+    font-size: large;
+    margin-bottom: 20px;
+}
+
+li {
+    list-style-type: none;
+}
