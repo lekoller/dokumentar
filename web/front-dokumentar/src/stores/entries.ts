@@ -4,7 +4,7 @@ import EntryType from "@/types/entry";
 
 export const useEntriesStore = defineStore("entries", () => {
 	const count = ref(1)
-    const entries: Ref<EntryType[]> = ref([
+	const initial: EntryType[] = [
 		{
 			id: count.value,
 			entity: "",
@@ -14,10 +14,16 @@ export const useEntriesStore = defineStore("entries", () => {
 			json: "",
 			comment: "",
 		}
-	]);
+	]
+    const entries: Ref<EntryType[]> = ref(initial);
+	
 	function increment() {
         count.value++;
     }
+	function reset() {
+		count.value = 1;
+	}
+
 	function add() {
 		increment()
 		entries.value.push({
@@ -30,6 +36,10 @@ export const useEntriesStore = defineStore("entries", () => {
 			comment: "",
 		})
 	}
-
-    return { entries, add };
+	function clear() {
+		reset()
+		entries.value = initial
+	}
+	
+    return { entries, add, clear };
 });

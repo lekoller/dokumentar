@@ -4,6 +4,10 @@
     </v-list-item>
     <v-divider></v-divider>
     <v-container class="container">
+        <v-btn variant="outlined" color="#544D6B" @click="store.clear">
+            <span>clear</span>
+            <v-icon class="icon">mdi-delete</v-icon>
+        </v-btn>
         <v-btn
             icon
             color="#4B5468"
@@ -12,6 +16,10 @@
             @click="store.add"
         >
             <v-icon>mdi-plus</v-icon>
+        </v-btn>
+        <v-btn variant="outlined" color="#405D5D"> 
+            <span>Write Documentation</span>
+            <v-icon class="icon">mdi-pencil</v-icon>
         </v-btn>
     </v-container>
 </template>
@@ -40,7 +48,12 @@ export default defineComponent({
 <style scoped>
 .container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.icon {
+    margin-left: 12px;
 }
 </style>
