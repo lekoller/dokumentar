@@ -44,6 +44,10 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 			detail = ""
 			valueType = "boolean"
 		}
+		if value == nil {
+			detail = ""
+			valueType = "null"
+		}
 
 		row := TableRow{Field: field, Type: valueType, Detail: detail}
 
@@ -53,7 +57,6 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 			fieldSliced := strings.Split(field, "_")
 
 			for _, frag := range fieldSliced {
-				// valueType += strings.Title(frag)
 				valueType += cases.Title(language.Und).String(frag)
 			}
 			r, f := mapToRows(value.(map[string]any))
@@ -68,7 +71,13 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 
 		aList, ok := value.([]any)
 		if ok {
-			first := aList[0]
+			var first any
+
+			if len(aList) > 0 {
+				first = aList[0]
+			} else {
+				first = nil
+			}
 
 			floatVal, ok := first.(float64)
 			if ok {
@@ -91,6 +100,10 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 					detail += "(uuid)"
 				}
 			}
+			if first == nil {
+				row.Detail = ""
+				valueType = "[]empty"
+			}
 
 			_, ok = first.(map[string]any)
 			if ok {
@@ -98,7 +111,7 @@ func mapToRows(jsonMap map[string]any) (rows []TableRow, fields []string) {
 				fieldSliced := strings.Split(field, "_")
 
 				for _, frag := range fieldSliced {
-					valueType += strings.Title(frag)
+					valueType += cases.Title(language.Und).String(frag)
 				}
 				r, f := mapToRows(first.(map[string]any))
 				subTable.Rows = r
@@ -132,9 +145,6 @@ func highlightFields(fields []string, commentary string) (cws []CommentWord) {
 				} else {
 					switch len(wSlc) {
 					case 1:
-						// w[0] = ""
-						// w[1] = field
-						// w[2] = wSlc[0]
 						w = &map[int]string{
 							0: "",
 							1: field,
@@ -144,9 +154,6 @@ func highlightFields(fields []string, commentary string) (cws []CommentWord) {
 						if hasAlpha(wSlc[1]) {
 							hl = false
 						} else {
-							// w[0] = wSlc[0]
-							// w[1] = field
-							// w[2] = wSlc[1]
 							w = &map[int]string{
 								0: wSlc[0],
 								1: field,
@@ -177,22 +184,6 @@ func highlightFields(fields []string, commentary string) (cws []CommentWord) {
 			Highlight: hl,
 		})
 	}
-	// for _, field := range fields {
-	// 	var com string
-	// 	comSliced := strings.Split(commentary, field)
-	// 	if len(comSliced) > 1 {
-	// 		for i, frag := range comSliced {
-	// 			com += frag
-	// 			if i < (len(comSliced) - 1) {
-	// 				com += `<span class="text-sky-600">` + field + `</span>`
-	// 			}
-	// 		}
-	// 		commentary = com
-	// 	}
-	// 	comment = commentary
-	// }
-
-	// comment = commentary
 	return
 }
 
