@@ -1,22 +1,19 @@
 package main
 
 import (
-	"net/http"
-	"time"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
-	"github.com/lekoller/dokumentar/components"
-	"github.com/lekoller/dokumentar/my_theme"
+	"github.com/lekoller/dokumentar/core/components"
+	"github.com/lekoller/dokumentar/core/my_theme"
 )
 
-var client *http.Client
-
 func main() {
-	client = &http.Client{Timeout: 10 * time.Second}
+	internalGUI()
+}
 
+func internalGUI() {
 	a := app.New()
 	win := a.NewWindow("DOKUMENTAR")
 	win.Resize(fyne.NewSize(1200, 800))

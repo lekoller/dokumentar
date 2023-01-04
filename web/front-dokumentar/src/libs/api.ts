@@ -12,7 +12,7 @@ export async function findAll() {
     return data;
 }
 
-export async function create() {
+export async function write() {
     const { data } = await api.post("/docs", {});
     return data;
 }

@@ -1,6 +1,6 @@
 package components
 
-import "github.com/lekoller/dokumentar/templates"
+import "github.com/lekoller/dokumentar/core/templates"
 
 func mountRenderCallback(c *ControlPanel) func() {
 	return func() {
